@@ -1,53 +1,51 @@
-import numpy as np
+import random
 import math
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from numpy import linalg as norm
 
-# Punktwolke laden (hier als Beispiel eine zufällige Punktwolke)
-# Angenommen, die Punktwolke ist in einer Textdatei gespeichert, wobei jede Zeile die Koordinaten eines Punktes enthält
+def random_points_with_min_distance(n, width, height, min_dist, max_tries=10000):
+    """
+    Erzeugt n zufällige Punkte im Rechteck [0,width]x[0,height],
+    wobei kein Punkt einem anderen näher als min_dist ist.
+    """
+    points = []
+    tries = 0
+    
+    while len(points) < n and tries < max_tries:
+        x = random.uniform(0, width)
+        y = random.uniform(0, height)
+        new_point = (x, y)
+        
+        # Prüfe Mindestabstand zu allen bestehenden Punkten
+        if all(math.dist(new_point, p) >= min_dist for p in points):
+            points.append(new_point)
+        
+        tries += 1
 
-density=100
+    if len(points) < n:
+        print(f"Nur {len(points)} Punkte nach {tries} Versuchen erzeugt.")
+    return points
 
-d = 0.4
 
-points1 = np.random.rand(density, 2)  # Beispiel: 1500 zufällige Punkte im 2D-Raum
-points2 = np.random.rand(density, 2)
+# === Parameter einstellen ===
+n = 50           # gewünschte Anzahl an Punkten
+width = 10       # Breite des Bereichs
+height = 10      # Höhe des Bereichs
+min_dist = 0.8   # Mindestabstand zwischen Punkten
 
-# Projektion in 2D
-x_proj = points1[:, 0]
-y_proj = 1.4*pow(points1[:, 0],2.0)-points1[:, 1]*pow(points1[:, 0],4.0)
-#print(points[:, 0]*points[:, 1]*0)
+# === Punkte generieren ===
+points = random_points_with_min_distance(n, width, height, min_dist)
 
-#print(points1[:, 0:(density)])
-#print(points1[:, 1:(density)])
+# === Punkte darstellen ===
+x_vals = [p[0] for p in points]
+y_vals = [p[1] for p in points]
 
-r = norm.norm(points1[:, 0]+points1[:, 1])
-
-print(r)
-
-u = points1[:, 0]
-v = points1[:, 1]
-
-x_proj = points2[:, 0]
-y_proj = points2[:, 1]
-
-for j in range(density):
-    if math.sqrt(pow(x_proj[j],2)+pow(y_proj[j],2))-0*math.sqrt(pow(x_proj[j-1],2)+pow(y_proj[j-1],2)) < 1:
-        u[j]=0
-        v[j]=0
-
-for j in range(density):
-    if math.sqrt(pow(x_proj[j],2)+pow(y_proj[j],2))-0*math.sqrt(pow(x_proj[j-1],2)+pow(y_proj[j-1],2)) > 1:
-        x_proj[j]=0
-        y_proj[j]=0
-
-# 2D Plot erstellen
-plt.figure(figsize=(10, 10))
-plt.scatter(x_proj, y_proj, c='blue', s=1330)
-plt.scatter(u, v, c='green', s=1393)
-plt.axis('equal')
-plt.gca().set_facecolor('white')
+plt.figure(figsize=(6,6))
+plt.scatter(x_vals, y_vals, c="royalblue", s=50)
+plt.title(f"{len(points)} zufällige Punkte mit Mindestabstand {min_dist}")
+plt.xlim(0, width)
+plt.ylim(0, height)
+plt.gca().set_aspect("equal", adjustable="box")
+plt.grid(True, linestyle="--", alpha=0.4)
 
 # Bild speichern
 plt.savefig('point_cloud.png', dpi=300)
