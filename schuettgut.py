@@ -3,10 +3,10 @@ import math
 import matplotlib.pyplot as plt
 
 # Parameter
-n = 100           # Anzahl Teilchen
-width = 10        # Breite des Bereichs
+n = 200           # Anzahl Teilchen
+width = 20        # Breite des Bereichs
 min_dist = 0.5    # Mindestabstand
-max_height = 0   # maximale Start-Höhe
+max_height = 0.1   # maximale Start-Höhe
 
 # Liste der Punkte
 points = []
@@ -37,7 +37,7 @@ x_vals = [p[0] for p in points]
 y_vals = [p[1] for p in points]
 
 plt.figure(figsize=(8,6))
-plt.scatter(x_vals, y_vals, c="sienna", s=50)
+plt.scatter(x_vals, y_vals, c="blue", s=50)
 plt.title("2D-Schüttgutsimulation mit Böschungswinkel")
 plt.xlim(0, width)
 plt.ylim(0, max(y_vals)+1)
